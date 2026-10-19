@@ -51,26 +51,30 @@ public class TowerCraneKitItem extends Item {
 		if (ctx.getClickedFace() != Direction.UP) return InteractionResult.FAIL;
 		if (!(ctx.getLevel() instanceof ServerLevel level)) return InteractionResult.SUCCESS;
 		Player player = ctx.getPlayer();
-		int height = height(ctx.getItemInHand());
-		BlockPos base = ctx.getClickedPos().above();
+		MachineEntity top = build(level, ctx.getClickedPos().above(), height(ctx.getItemInHand()), player != null ? player.getYRot() : 0, player);
+		if (top == null) {
+			if (player != null) player.sendOverlayMessage(Component.translatable("machines.no_room"));
+			return InteractionResult.FAIL;
+		}
+		ctx.getItemInHand().consume(1, player);
+		return InteractionResult.SUCCESS_SERVER;
+	}
+
+	/** Builds a mast of `height` blocks on `base` with the crane on top; null if there is no room. */
+	public static @org.jspecify.annotations.Nullable MachineEntity build(ServerLevel level, BlockPos base, int height, float yaw, @org.jspecify.annotations.Nullable Player player) {
 		// Room for the mast and the top (the jib swings above the mast).
 		for (int y = 0; y < height + 3; y++) {
 			BlockPos p = base.above(y);
-			if (!TerrainOps.replaceable(level.getBlockState(p)) || player != null && !level.mayInteract(player, p) || !level.isInWorldBounds(p)) {
-				if (player != null) player.sendOverlayMessage(Component.translatable("machines.no_room"));
-				return InteractionResult.FAIL;
-			}
+			if (!level.isInWorldBounds(p) || !TerrainOps.replaceable(level.getBlockState(p)) || player != null && !level.mayInteract(player, p)) return null;
 		}
 		MachineEntity top = ModRegistry.type("tower_crane").create(level, EntitySpawnReason.SPAWN_ITEM_USE);
-		if (top == null) return InteractionResult.FAIL;
+		if (top == null) return null;
 		for (int y = 0; y < height; y++) level.setBlockAndUpdate(base.above(y), ModRegistry.CRANE_MAST.defaultBlockState());
-		float yaw = player != null ? player.getYRot() : 0;
 		top.snapTo(base.getX() + 0.5, base.getY() + height, base.getZ() + 0.5, yaw, 0);
 		top.setYBodyRot(yaw);
 		top.setYHeadRot(yaw);
 		level.addFreshEntity(top);
 		level.playSound(null, base, SoundEvents.ANVIL_USE, top.getSoundSource(), 0.8F, 0.8F);
-		ctx.getItemInHand().consume(1, player);
-		return InteractionResult.SUCCESS_SERVER;
+		return top;
 	}
 }

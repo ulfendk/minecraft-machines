@@ -131,7 +131,10 @@ export function operatorSeat(b, { x, y, z }) {
  */
 export function lattice(b, { at: [x, y, z], w, h, length, mat = 'paint', every = 8 }) {
   const x0 = x - w / 2, y0 = y - h / 2;
-  for (const [cx, cy] of [[x0, y0], [x0 + w - 1, y0], [x0, y0 + h - 1], [x0 + w - 1, y0 + h - 1]]) b.box([cx, cy, z - length], [1, 1, length], mat);
+  // Chords in short pieces: long thin cubes waste a lot of texture space in box UV.
+  for (const [cx, cy] of [[x0, y0], [x0 + w - 1, y0], [x0, y0 + h - 1], [x0 + w - 1, y0 + h - 1]]) {
+    for (let d = 0; d < length; d += 32) b.box([cx, cy, z - Math.min(length, d + 32)], [1, 1, Math.min(32, length - d)], mat);
+  }
   for (let d = every; d < length; d += every) {
     const zz = z - d;
     b.box([x0 + 1, y0, zz], [w - 2, 1, 1], mat);

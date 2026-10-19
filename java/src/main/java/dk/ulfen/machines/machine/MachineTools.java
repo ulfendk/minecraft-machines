@@ -181,7 +181,17 @@ public final class MachineTools {
 			for (int y = cutY; y <= cutY + 2; y++) {
 				BlockPos p = BlockPos.containing(c.x, y, c.z);
 				BlockState state = level.getBlockState(p);
-				if (!TerrainOps.canDig(level, p, state, m.spec.tool.maxHardness) || m.load.isFull()) continue;
+				if (!TerrainOps.canDig(level, p, state, m.spec.tool.maxHardness)) continue;
+				// A full blade pushes the heap ahead of it: drop one block in front to make room.
+				if (m.load.isFull() && !m.mode()) {
+					String ahead = m.load.takeOne();
+					Vec3 front = m.position().add(f.scale(strip.ahead + 1.6)).add(0, cutY + 2 - m.getY(), 0);
+					if (!TerrainOps.pour(level, m.operator(), front, ahead)) {
+						m.load.add(ahead, 1);
+						continue;
+					}
+				}
+				if (m.load.isFull()) continue;
 				String drop = TerrainOps.dropOf(state);
 				if (TerrainOps.breakBlock(level, m.operator(), p)) {
 					if (drop != null) m.load.add(drop, 1);

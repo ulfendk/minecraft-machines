@@ -73,7 +73,7 @@ public class MachineEntity extends Mob implements GeoEntity {
 	@Nullable BlockState carriedBlock;
 	@Nullable UUID carriedEntity;
 	@Nullable UUID displayId;
-	int concreteColour = 8; // gray
+	int concreteColour = 7; // gray
 	int toolTicks;
 	Vec3 lastPos = Vec3.ZERO;
 
@@ -425,7 +425,7 @@ public class MachineEntity extends Mob implements GeoEntity {
 		throttle += Mth.clamp(target - throttle, -step, step);
 		// A/D steer. Wheeled machines only turn while rolling (and the other way round when
 		// reversing); tracks and skid steers can also turn on the spot.
-		boolean tracks = "tracks".equals(spec.drive.type);
+		boolean tracks = "tracks".equals(spec.drive.type) || "skid".equals(spec.drive.type);
 		boolean rolling = Math.abs(throttle) > 0.05F;
 		float turn = 0;
 		if (rolling) turn = -controller.xxa * spec.drive.turn * (throttle < 0 ? -1 : 1) * Math.min(1F, Math.abs(throttle) * 2 + (tracks ? 0.5F : 0F));
@@ -475,7 +475,7 @@ public class MachineEntity extends Mob implements GeoEntity {
 		carriedBlock = in.read("CarriedBlock", BlockState.CODEC).orElse(null);
 		Optional<UUID> e = in.read("CarriedEntity", UUIDUtil.CODEC);
 		carriedEntity = e.orElse(null);
-		concreteColour = in.getIntOr("ConcreteColour", 8);
+		concreteColour = in.getIntOr("ConcreteColour", 7);
 		setMode(in.getBooleanOr("Mode", false));
 		setCarrying(carriedBlock != null || carriedEntity != null);
 		syncLoad();
