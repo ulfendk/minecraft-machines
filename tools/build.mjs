@@ -1,6 +1,7 @@
 // Generates the behavior pack and resource pack into build/, and the Java edition's
 // resources into java/src/generated/resources (tools/java.mjs).
 import { copyFile, cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -96,8 +97,9 @@ export async function build({ quiet = false } = {}) {
   const pkg = JSON.parse(await readFile(join(ROOT, 'package.json'), 'utf8'));
   await rm(BP, { recursive: true, force: true });
   await rm(RP, { recursive: true, force: true });
-  await cp(join(ROOT, 'src', 'packs', 'behavior_pack'), BP, { recursive: true });
-  await cp(join(ROOT, 'src', 'packs', 'resource_pack'), RP, { recursive: true });
+  for (const [from, to] of [['behavior_pack', BP], ['resource_pack', RP]]) {
+    if (existsSync(join(ROOT, 'src', 'packs', from))) await cp(join(ROOT, 'src', 'packs', from), to, { recursive: true });
+  }
 
   const { bp, rp } = manifests(pkg.version);
   await write(join(BP, 'manifest.json'), bp);
