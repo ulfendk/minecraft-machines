@@ -1,7 +1,7 @@
 // Zips build/ into installable files in dist/:
-//   SafariAnimals-<version>.mcaddon        (both packs; double-click to import)
-//   SafariAnimals_BP-<version>.mcpack      (behavior pack only)
-//   SafariAnimals_RP-<version>.mcpack      (resource pack only)
+//   ConstructionMachines-<version>.mcaddon        (both packs; double-click to import)
+//   ConstructionMachines_BP-<version>.mcpack      (behavior pack only)
+//   ConstructionMachines_RP-<version>.mcpack      (resource pack only)
 import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import { zipSync } from 'fflate';
@@ -28,11 +28,11 @@ await mkdir('dist', { recursive: true });
 const bp = await collect('build/behavior_pack');
 const rp = await collect('build/resource_pack');
 const outputs = {
-  [`SafariAnimals_BP-${v}.mcpack`]: bp,
-  [`SafariAnimals_RP-${v}.mcpack`]: rp,
-  [`SafariAnimals-${v}.mcaddon`]: {
-    ...(await collect('build/behavior_pack', 'SafariAnimals_BP')),
-    ...(await collect('build/resource_pack', 'SafariAnimals_RP')),
+  [`ConstructionMachines_BP-${v}.mcpack`]: bp,
+  [`ConstructionMachines_RP-${v}.mcpack`]: rp,
+  [`ConstructionMachines-${v}.mcaddon`]: {
+    ...(await collect('build/behavior_pack', 'ConstructionMachines_BP')),
+    ...(await collect('build/resource_pack', 'ConstructionMachines_RP')),
   },
 };
 for (const [name, files] of Object.entries(outputs)) {

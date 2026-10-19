@@ -9,7 +9,7 @@ const match = changelog.match(new RegExp(`^## \\[?${version.replace(/\./g, '\\.'
 console.log(match ? match[1].trim() : `Release ${tag}`);
 console.log(`
 ### Install
-- **Windows, Android, iOS:** download \`SafariAnimals-${version}.mcaddon\` and open it. Minecraft imports both packs.
-- Then edit or create a world and turn on **Safari Animals** under *Behavior Packs*. The resource pack is turned on automatically.
+- **Windows, Android, iOS:** download \`ConstructionMachines-${version}.mcaddon\` and open it. Minecraft imports both packs.
+- Then edit or create a world and turn on **Construction Machines** under *Behavior Packs*. The resource pack is turned on automatically.
 - The \`.mcpack\` files are the same packs separately, e.g. for servers.
-- **Java Edition (Fabric):** put \`safari-animals-fabric-${version}+26.3.jar\` in your \`mods\` folder together with [Fabric API](https://modrinth.com/mod/fabric-api) and [GeckoLib](https://modrinth.com/mod/geckolib) (Minecraft 26.3).`);
+- **Java Edition (Fabric):** put \`construction-machines-fabric-${version}+26.3.jar\` in your \`mods\` folder together with [Fabric API](https://modrinth.com/mod/fabric-api) and [GeckoLib](https://modrinth.com/mod/geckolib) (Minecraft 26.3).`);

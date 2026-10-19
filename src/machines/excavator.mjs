@@ -64,9 +64,9 @@ export default {
   drive: { type: 'tracks', speed: 0.13, accel: 0.03, brake: 0.06, turn: 2.5, link: 3 },
   channels: [
     { id: 'slew', min: -180, max: 180, wrap: true, rate: 3, rest: 0 },
-    { id: 'boom', min: -25, max: 50, rate: 1.6, rest: 10 },
-    { id: 'stick', min: -45, max: 60, rate: 2, rest: 30 },
-    { id: 'bucket', min: -50, max: 100, rate: 3, rest: 20 },
+    { id: 'boom', min: -25, max: 50, rate: 1.6, rest: 30 },
+    { id: 'stick', min: -45, max: 60, rate: 2, rest: 40 },
+    { id: 'bucket', min: -50, max: 100, rate: 3, rest: 60 },
   ],
   drivers: [
     { bone: 'upper', prop: 'rotation', axis: 1, terms: [['c0', 1]] },
