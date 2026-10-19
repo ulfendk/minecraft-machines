@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Smoke test: load the packs into a Bedrock Dedicated Server (Docker), summon
-# every animal and fail if the content log reports errors.
+# every machine, run the script selftest and fail if the content log reports errors.
 # Usage: tools/bds-test.sh   (run `npm run build` first)
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-NAME=safari-bds-test
+NAME=machines-bds-test
 DATA="$PWD/build/bds"
-LEVEL=safari_test
+LEVEL=machines_test
 IMAGE=${BDS_IMAGE:-itzg/minecraft-bedrock-server:latest}
 TIMEOUT=${BDS_TIMEOUT:-600}
 
@@ -17,8 +17,8 @@ version() { node -e "console.log(JSON.stringify(require('./build/$1/manifest.jso
 docker rm -f "$NAME" >/dev/null 2>&1 || true
 rm -rf "$DATA"
 mkdir -p "$DATA/behavior_packs" "$DATA/resource_packs" "$DATA/worlds/$LEVEL"
-cp -R build/behavior_pack "$DATA/behavior_packs/safari_bp"
-cp -R build/resource_pack "$DATA/resource_packs/safari_rp"
+cp -R build/behavior_pack "$DATA/behavior_packs/machines_bp"
+cp -R build/resource_pack "$DATA/resource_packs/machines_rp"
 echo "[{\"pack_id\":\"$(uuid behavior_pack)\",\"version\":$(version behavior_pack)}]" > "$DATA/worlds/$LEVEL/world_behavior_packs.json"
 echo "[{\"pack_id\":\"$(uuid resource_pack)\",\"version\":$(version resource_pack)}]" > "$DATA/worlds/$LEVEL/world_resource_packs.json"
 
@@ -51,44 +51,36 @@ until docker logs "$NAME" 2>&1 | grep -q "Server started"; do
 done
 
 send() { docker exec -u 0 "$NAME" send-command "$@"; }
-send tickingarea add circle 0 0 0 3 safari_test true
+send tickingarea add circle 0 0 0 4 machines_test true
 sleep 5
-# Summon in a 6-wide grid that stays inside the ticking area.
+# Summon every machine in a grid that stays inside the ticking area. The tower crane
+# needs its mast: the selftest builds one with the kit instead.
 n=0
 ids=""
 for f in build/behavior_pack/entities/*.json; do
   id=$(basename "$f" .json)
-  grep -q '"is_spawnable": false' "$f" && continue
+  [ "$id" = tower_crane ] && continue
   ids="$ids $id"
-  x=$(( (n % 6) * 6 )); z=$(( (n / 6) * 6 ))
-  # Water animals get a small pool so they don't suffocate before the check.
-  y=-60
-  if grep -qE '"breathes_air": false|minecraft:behavior.swim_up_for_breath' "$f"; then
-    send fill $x -62 $z $((x + 2)) -60 $((z + 2)) water
-    y=-61
-  fi
-  send summon "safari:$id" $((x + 1)) $y $((z + 1))
+  x=$(( (n % 4) * 9 )); z=$(( (n / 4) * 9 ))
+  send summon "machines:$id" $((x + 1)) -60 $((z + 1))
   n=$((n + 1))
 done
-send setblock 40 -60 40 safari:thorn_bush
-send time set night
+send setblock 40 -60 40 machines:crane_mast
 sleep 10
-send time set day
-sleep 10
-send scriptevent safari:selftest "$ids"
-sleep 3
+send scriptevent machines:selftest "$ids"
+sleep 6
 
 LOG=$(docker logs "$NAME" 2>&1)
-echo "$LOG" | grep -iE "safari|error|warn|\[Scripting\]" | grep -vE "send-command|^\s*$" | tail -100 || true
+echo "$LOG" | grep -iE "machines|construction|error|warn|\[Scripting\]" | grep -vE "send-command|^\s*$" | tail -100 || true
 
-if ! echo "$LOG" | grep -q "\[Safari Animals\] loaded"; then
+if ! echo "$LOG" | grep -q "\[Construction Machines\] loaded"; then
   echo "FAIL: add-on script did not report loading"; exit 1
 fi
 if echo "$LOG" | grep -qiE "Unknown block|is not a valid block|Cannot place block"; then
-  echo "FAIL: thorn bush block could not be placed"; exit 1
+  echo "FAIL: the crane mast block could not be placed"; exit 1
 fi
 if ! echo "$LOG" | grep -q "selftest PASS"; then
-  echo "FAIL: not every animal could be summoned"; exit 1
+  echo "FAIL: the selftest did not pass"; exit 1
 fi
 if echo "$LOG" | grep -E "ERROR|\[error\]|Error\]" | grep -viE "Failed to connect|network|telemetry" | grep -q .; then
   echo "FAIL: content log has errors"; exit 1

@@ -6,15 +6,23 @@ import { restValues } from './machines.mjs';
 
 const r3 = (n) => Math.round(n * 1000) / 1000;
 
+/**
+ * Bedrock wants float properties written as decimals (0.0, not 0), which JSON.stringify
+ * can't do: floats are tagged here and written out by floatJson().
+ */
+const float = (n) => `F:${Number(n)}`;
+export const floatJson = (data) => JSON.stringify(data, null, 2)
+  .replace(/"F:(-?[\d.e-]+)"/g, (_, n) => (n.includes('.') ? n : `${n}.0`)) + '\n';
+
 /** Entity properties that carry the operating state to the client. */
 export function properties(m) {
   const props = {};
   m.channels.forEach((c, i) => {
-    props[`${NS}:c${i}`] = { type: 'float', range: [c.min, c.max], default: c.rest, client_sync: true };
+    props[`${NS}:c${i}`] = { type: 'float', range: [float(c.min), float(c.max)], default: float(c.rest), client_sync: true };
   });
-  props[`${NS}:load`] = { type: 'float', range: [0, 1], default: 0, client_sync: true };
+  props[`${NS}:load`] = { type: 'float', range: [float(0), float(1)], default: float(0), client_sync: true };
   props[`${NS}:kind`] = { type: 'int', range: [0, 3], default: 0, client_sync: true };
-  props[`${NS}:steer`] = { type: 'float', range: [-1, 1], default: 0, client_sync: true };
+  props[`${NS}:steer`] = { type: 'float', range: [float(-1), float(1)], default: float(0), client_sync: true };
   props[`${NS}:carry`] = { type: 'bool', default: false, client_sync: true };
   props[`${NS}:pour`] = { type: 'bool', default: false, client_sync: true };
   props[`${NS}:mode`] = { type: 'int', range: [0, 2], default: 0, client_sync: true };

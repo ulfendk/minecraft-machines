@@ -5,7 +5,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { machineAnimation } from '../src/lib/anim.mjs';
-import { buildEntity, buildLoot, runtimeRecord } from '../src/lib/behavior.mjs';
+import { buildEntity, buildLoot, floatJson, runtimeRecord } from '../src/lib/behavior.mjs';
 import { buildClientEntity, buildRenderController } from '../src/lib/client.mjs';
 import { MIN_ENGINE, NS, PACK_NAME, SCRIPT_SERVER_VERSION, SCRIPT_UI_VERSION } from '../src/lib/constants.mjs';
 import { packIcon } from '../src/lib/icon.mjs';
@@ -110,7 +110,7 @@ export async function build({ quiet = false } = {}) {
   const java = { geos: {}, anims: {}, textures: {}, records: [] };
   const report = [];
   for (const m of machines) {
-    await write(join(BP, 'entities', `${m.id}.json`), buildEntity(m));
+    await write(join(BP, 'entities', `${m.id}.json`), floatJson(buildEntity(m)));
     await write(join(BP, 'loot_tables', 'entities', `${NS}_${m.id}.json`), buildLoot(m));
 
     const geo = buildGeometry(`geometry.${NS}.${m.id}`, m.model);
