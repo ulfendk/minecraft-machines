@@ -109,5 +109,6 @@ export function commonMaterials(main, { second = PALETTE.dark, mudTo = 8 } = {})
     rock: rock(),
     sand: sand(),
     crate: crate(),
+    ballast: paint('#8e8d88', { wearAmount: 0.2 }),
   };
 }

@@ -61,7 +61,7 @@ export default {
   mass: 30,
   camera: 9,
   seats: [{ at: [7, seatY, -5], bone: 'upper' }],
-  drive: { type: 'tracks', speed: 0.13, accel: 0.012, turn: 2.5, link: 3 },
+  drive: { type: 'tracks', speed: 0.13, accel: 0.03, brake: 0.06, turn: 2.5, link: 3 },
   channels: [
     { id: 'slew', min: -180, max: 180, wrap: true, rate: 3, rest: 0 },
     { id: 'boom', min: -25, max: 50, rate: 1.6, rest: 10 },

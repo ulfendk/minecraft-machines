@@ -158,7 +158,8 @@ export function lattice(b, { at: [x, y, z], w, h, length, mat = 'paint', every =
  * A crate under the hook shows a lifted block on Bedrock (bone `carry`).
  */
 export function hoist(m, parent, [x, y, z], { hookMat = 'paint2' } = {}) {
-  m.bone('hook_pivot', parent, [x, y, z]);
+  // The pulley block gives the pivot bone a cube (GeckoLib leaves empty bones unanimated).
+  m.bone('hook_pivot', parent, [x, y, z]).box([x - 1.5, y - 1, z - 1.5], [3, 2, 3], 'dark');
   m.bone('rope', 'hook_pivot', [x, y, z]).box([x - 0.5, y - 16, z - 0.5], [1, 16, 1], 'dark');
   const hook = m.bone('hook', 'hook_pivot', [x, y, z]);
   hook.box([x - 2, y - 4, z - 2], [4, 3, 4], 'metal'); // block

@@ -41,13 +41,15 @@ public class MachineClientGameTest implements FabricClientGameTest {
 			}
 			String filter = System.getProperty("machines.screenshot");
 			List<String> only = filter == null ? List.of() : List.of(filter.split(","));
+			BlockPos[] marker = new BlockPos[1];
 			for (MachineSpec spec : ModRegistry.SPECS) {
 				if (!only.isEmpty() && !only.contains(spec.id)) continue;
 				String type = "machines:" + spec.id;
 				server.runCommand("ride @p dismount");
 				server.runCommand("kill @e[type=!player]");
+				// (fill is limited to 32768 blocks per command)
 				server.runCommand("fill -40 -61 -40 40 -61 40 minecraft:grass_block");
-				server.runCommand("fill -40 -60 -40 40 -20 40 minecraft:air");
+				for (int y = -60; y < -20; y += 4) server.runCommand("fill -40 " + y + " -40 40 " + (y + 3) + " 40 minecraft:air");
 				int baseY = -60;
 				if (!spec.drives()) {
 					server.runCommand("fill 0 -60 0 0 -49 0 machines:crane_mast");
@@ -64,16 +66,16 @@ public class MachineClientGameTest implements FabricClientGameTest {
 						var c = spec.channels.get(i);
 						m.setChannel(i, c.wrap ? 60 : c.rest + (c.max - c.rest) * 0.5F);
 					}
-					s.overworld().setBlockAndUpdate(BlockPos.containing(m.tip()), Blocks.GOLD_BLOCK.defaultBlockState());
+					marker[0] = BlockPos.containing(m.tip());
+					s.overworld().setBlockAndUpdate(marker[0], Blocks.GOLD_BLOCK.defaultBlockState());
 				});
 				context.waitTicks(10);
-				server.runCommand("tp @p 9 " + (baseY + 5) + " -9 45 20");
-				context.waitTicks(15);
+				int up = spec.drives() ? 4 : 2;
+				look(context, server, 9, baseY + up, -9, 45, 15);
 				context.takeScreenshot("machine_" + spec.id + "_tip");
-				server.runCommand("tp @p -10 " + (baseY + 6) + " 10 -135 20");
-				context.waitTicks(10);
+				look(context, server, -10, baseY + up + 1, 10, -135, 15);
 				context.takeScreenshot("machine_" + spec.id + "_back");
-				server.runCommand("fill -40 -60 -40 40 -20 40 minecraft:air replace minecraft:gold_block");
+				server.runOnServer(s -> s.overworld().setBlockAndUpdate(marker[0], marker[0].getY() <= -61 ? Blocks.GRASS_BLOCK.defaultBlockState() : Blocks.AIR.defaultBlockState()));
 
 				// Ride it: the HUD shows the controls.
 				server.runCommand("ride @p mount @e[type=" + type + ",limit=1]");
@@ -100,21 +102,21 @@ public class MachineClientGameTest implements FabricClientGameTest {
 					context.waitTicks(15);
 					double[] turned = state(server, type);
 					double yaw = Math.abs(Mth.wrapDegrees(turned[3] - moved[3]));
-					System.out.printf("[machines-test] %s drove %.1f blocks, turned %.0f degrees%n", spec.id, dist, yaw);
+					System.out.printf("[machines-test] %s drove %.1f blocks (from %.1f %.1f %.1f to %.1f %.1f %.1f), turned %.0f degrees%n", spec.id, dist, start[0], start[1], start[2], moved[0], moved[1], moved[2], yaw);
 					if (dist < 2.5) throw new AssertionError(spec.id + " did not drive forward (" + dist + " blocks)");
 					if (yaw < 15) throw new AssertionError(spec.id + " did not steer (" + yaw + " degrees)");
 				}
 				if (spec.channels.size() > 0) {
 					float before = channel(server, type, 0);
 					var c = spec.channels.get(0);
-					boolean up = c.wrap || before < c.max - 1;
-					context.getInput().holdKey(up ? MachineKeys.POS[0] : MachineKeys.NEG[0]);
+					boolean raise = c.wrap || before < c.max - 1;
+					context.getInput().holdKey(raise ? MachineKeys.POS[0] : MachineKeys.NEG[0]);
 					context.waitTicks(20);
-					context.getInput().releaseKey(up ? MachineKeys.POS[0] : MachineKeys.NEG[0]);
+					context.getInput().releaseKey(raise ? MachineKeys.POS[0] : MachineKeys.NEG[0]);
 					context.waitTicks(5);
 					float after = channel(server, type, 0);
 					System.out.printf("[machines-test] %s %s: %.1f -> %.1f%n", spec.id, c.id, before, after);
-					if (Math.abs(Mth.wrapDegrees(after - before)) < 3) throw new AssertionError(spec.id + ": the operating key did not move " + c.id);
+					if (Math.abs(Mth.wrapDegrees(after - before)) < Math.min(3, (c.max - c.min) * 0.2)) throw new AssertionError(spec.id + ": the operating key did not move " + c.id);
 				}
 			}
 		}
@@ -146,6 +148,18 @@ public class MachineClientGameTest implements FabricClientGameTest {
 			context.takeScreenshot("calibrate_slew_" + (int) slew);
 			server.runCommand("fill -20 -61 -20 20 -61 20 minecraft:white_concrete");
 		}
+	}
+
+	/** Puts the camera somewhere and makes sure the client has taken the new view. */
+	private static void look(ClientGameTestContext context, TestServerContext server, double x, double y, double z, float yaw, float pitch) {
+		server.runCommand("tp @p " + x + " " + y + " " + z + " " + yaw + " " + pitch);
+		context.waitTicks(5);
+		context.runOnClient(mc -> {
+			mc.player.setPos(x, y, z);
+			mc.player.setYRot(yaw);
+			mc.player.setXRot(pitch);
+		});
+		context.waitTicks(10);
 	}
 
 	private static MachineEntity machine(net.minecraft.server.level.ServerLevel level, String type) {

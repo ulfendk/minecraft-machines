@@ -31,7 +31,7 @@ for (const [name, z] of [['wheel_1', -30], ['wheel_2', -16], ['wheel_3', 18], ['
 const up = m.bone('upper', 'root', [0, 16, 12]);
 up.box([-11, 16, 0], [22, 4, 26], 'paint')
   .box([-11, 20, 12], [22, 10, 14], 'paint') // engine house
-  .box([-11, 16, 26], [22, 14, 5], 'paint2') // counterweight
+  .box([-11, 16, 26], [22, 14, 5], 'ballast') // counterweight
   .box([-11.5, 24, 12], [23, 2, 19.5], 'stripe');
 cab(up, { x0: 3, y0: 20, z0: -2, w: 8, h: 12, d: 11, open: ['front', 'left', 'right'] });
 const seatY = operatorSeat(up, { x: 7, y: 20, z: 5 });

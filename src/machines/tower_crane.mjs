@@ -23,8 +23,8 @@ const tie = (len, angle, z) => slew.box([-0.5, 37, z - len], [1, 1, len], 'metal
 tie(Math.round(Math.hypot(24, 110)), Math.round((Math.atan2(24, 110) * 180) / Math.PI), 0);
 slew.box([-0.5, 37, 0], [1, 1, Math.round(Math.hypot(24, 56))], 'metal', { rotation: [-Math.round((Math.atan2(24, 56) * 180) / Math.PI), 0, 0], pivot: [0, 37.5, 0] });
 // Counterweights and the hoist winch on the counter-jib.
-slew.box([-6, 0, 50], [12, 12, 8], 'paint2')
-  .box([-6, 0, 58], [12, 12, 8], 'paint2')
+slew.box([-6, 0, 50], [12, 12, 8], 'ballast')
+  .box([-6, 0, 58], [12, 12, 8], 'ballast')
   .box([-4, 13, 20], [8, 6, 8], 'dark');
 // Operator's cab on the side of the tower head.
 cab(slew, { x0: 4, y0: 4, z0: -12, w: 9, h: 12, d: 10, open: ['front', 'left', 'right'] });

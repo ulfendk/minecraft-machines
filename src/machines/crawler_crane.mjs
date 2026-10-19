@@ -16,7 +16,8 @@ const up = m.bone('upper', 'root', [0, 10, 0]);
 up.box([-12, 10, -12], [24, 4, 32], 'paint') // deck
   .box([-12, 14, 2], [24, 12, 16], 'paint') // machine house
   .box([-12.5, 18, 2], [25, 2, 16.5], 'stripe')
-  .box([-12, 10, 20], [24, 16, 6], 'paint2') // counterweight
+  .box([-12, 10, 20], [24, 16, 6], 'paint') // counterweight
+  .box([-12.5, 14, 20], [25, 3, 6.5], 'stripe')
   .box([-3, 26, 6], [2, 4, 2], 'dark') // exhaust
   // A-frame gantry that holds the boom's pendant lines
   .box([-6, 26, 4], [1, 16, 1], 'metal', { rotation: [-20, 0, 0] })
