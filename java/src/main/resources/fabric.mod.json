@@ -1,0 +1,28 @@
+{
+	"schemaVersion": 1,
+	"id": "machines",
+	"version": "${version}",
+	"name": "Construction Machines",
+	"description": "Excavators, wheel loaders, dump trucks, bulldozers, cranes and more that you can drive and operate.",
+	"authors": ["ulfendk"],
+	"contact": {
+		"homepage": "https://ulfendk.github.io/minecraft-machines/",
+		"sources": "https://github.com/ulfendk/minecraft-machines",
+		"issues": "https://github.com/ulfendk/minecraft-machines/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/machines/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": ["dk.ulfen.machines.ConstructionMachines"],
+		"client": ["dk.ulfen.machines.client.ConstructionMachinesClient"]
+	},
+	"mixins": ["machines.mixins.json"],
+	"depends": {
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
+		"fabric-api": "*",
+		"geckolib": ">=5.5"
+	}
+}

@@ -1,0 +1,18 @@
+{
+	"schemaVersion": 1,
+	"id": "machines-test",
+	"version": "1.0.0",
+	"name": "Construction Machines tests",
+	"environment": "*",
+	"entrypoints": {
+		"fabric-gametest": [
+			"dk.ulfen.machines.test.MachineGameTests"
+		],
+		"fabric-client-gametest": [
+			"dk.ulfen.machines.test.MachineClientGameTest"
+		]
+	},
+	"depends": {
+		"machines": "*"
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"required": true,
+	"package": "dk.ulfen.machines.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": ["BlockDisplayAccessor", "DisplayAccessor"],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

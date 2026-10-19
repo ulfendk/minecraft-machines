@@ -1,0 +1,27 @@
+{
+  "name": "construction-machines",
+  "version": "0.1.0",
+  "description": "Construction Machines: a Minecraft Bedrock add-on and Java mod with excavators, loaders, dump trucks, bulldozers and cranes you can drive and operate",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "validate": "node tools/validate.mjs",
+    "package": "node tools/package.mjs",
+    "preview": "node tools/preview.mjs",
+    "test": "node --test test/",
+    "all": "npm run build && npm run validate && npm test && npm run package",
+    "site": "node tools/site.mjs",
+    "test:server": "tools/bds-test.sh"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@minecraft/server": "^2.0.0",
+    "@minecraft/server-ui": "^2.0.0",
+    "fflate": "^0.8.2",
+    "pngjs": "^7.0.0"
+  }
+}
