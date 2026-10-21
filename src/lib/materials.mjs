@@ -39,7 +39,9 @@ export const chrome = () => ({ base: '#c9d0d4', layers: [fur(0.05)], shading: 0.
 
 export const rubber = (color = '#262626') => ({ base: color, layers: [fur(0.05)], shading: 0.1 });
 
-export const glass = () => ({ base: '#a8d4e6a0', layers: [(c, { i, j }) => ((i + j) % 7 === 0 ? shade(c, 1.25) : c)], shading: 0.05 });
+// Both faces of a pane are drawn (the materials don't cull back faces), so the alpha counts twice:
+// 0x48 per face is about 50% opaque through the pane.
+export const glass = () => ({ base: '#b4dcec48', layers: [(c, { i, j }) => ((i + j) % 7 === 0 ? shade(c, 1.25) : c)], shading: 0.05 });
 
 /** Tyre with tread blocks across the rolling surface and a darker side wall. */
 export const tyre = () => ({
