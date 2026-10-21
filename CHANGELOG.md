@@ -1,5 +1,8 @@
 # Changelog
 
+## [0.1.1] - 2026-10-21
+- Cab glass is easier to see through, especially from inside the cab.
+
 ## [0.1.0] - 2026-10-19
 First release, for Bedrock and Java (Fabric 26.3):
 - 12 machines you drive and operate: excavator, wheel loader, bulldozer, articulated dump truck, skid steer, crawler crane, mobile crane, tower crane, concrete mixer truck, road roller, forklift and telehandler.

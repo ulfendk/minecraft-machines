@@ -1,6 +1,6 @@
 {
   "name": "construction-machines",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Construction Machines: a Minecraft Bedrock add-on and Java mod with excavators, loaders, dump trucks, bulldozers and cranes you can drive and operate",
   "private": true,
   "type": "module",
