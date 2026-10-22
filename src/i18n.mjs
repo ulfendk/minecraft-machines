@@ -50,6 +50,7 @@ export const GROUP_NAMES = {
 };
 
 const en = {
+  allMods: 'All our mods',
   title: 'Construction Machines – Minecraft add-on and mod',
   description: (n) => `${n} big construction machines for Minecraft Bedrock and Java Edition that you can drive and operate: excavators, wheel loaders, dump trucks, bulldozers and cranes. Free download.`,
   tagline: (n) => `${n} big machines for Minecraft Bedrock and Java Edition. Drive them, then work them: dig real holes, load dump trucks, level the ground and lift blocks, animals and other machines with cranes.`,
@@ -124,6 +125,7 @@ const en = {
 };
 
 const da = {
+  allMods: 'Alle vores mods',
   title: 'Construction Machines – entreprenørmaskiner til Minecraft',
   description: (n) => `${n} store entreprenørmaskiner til Minecraft Bedrock og Java Edition, som du kan køre og betjene: gravemaskiner, gummiged, dumpere, bulldozere og kraner. Gratis download.`,
   tagline: (n) => `${n} store maskiner til Minecraft Bedrock og Java Edition. Kør dem, og sæt dem i arbejde: grav rigtige huller, læs dumpere, planér terrænet, og løft blokke, dyr og andre maskiner med kraner.`,

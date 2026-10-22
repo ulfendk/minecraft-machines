@@ -51,6 +51,8 @@ await copyFile(join(RP, 'pack_icon.png'), join(OUT, 'favicon.png'));
 const releases = `https://github.com/${repo}/releases`;
 const dl = (file) => `${releases}/latest/download/${file}`;
 const ROOT_URL = `https://${owner}.github.io/${name}/`;
+// The index of all our mods, which every mod's site links back to.
+const INDEX_URL = `https://${owner}.github.io/minecraft-index/`;
 
 function page(lang) {
   const L = LANGUAGES[lang];
@@ -58,6 +60,7 @@ function page(lang) {
   const i = lang === 'da' ? 1 : 0;
   const up = L.dir ? '../' : '';
   const link = (href) => (text) => `<a href="${href}">${esc(text)}</a>`;
+  const home = `${INDEX_URL}${L.dir ? L.dir + '/' : ''}`;
   const nameOf = (id, fallback) => t.names?.[id] ?? fallback;
 
   const machineHtml = machines.map((m) => {
@@ -136,7 +139,7 @@ header.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom:
 .version strong { color: #fff; }
 .which { margin: 16px 0 6px; background: rgb(0 0 0 / .22); border: 1px solid rgb(255 243 223 / .35); border-radius: 10px; padding: 10px 14px; max-width: 62ch; font-size: .95rem; color: #fff3df; }
 .which b { color: #fff; }
-.hero .langs { display: flex; justify-content: flex-end; margin-top: -28px; margin-bottom: 8px; }
+.hero .langs { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: -28px; margin-bottom: 8px; }
 .hero .langs a { color: #fff3df; font-weight: 600; text-decoration: none; padding: 4px 12px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px rgb(255 243 223 / .55); font-size: .9rem; }
 main section { padding: 48px 0 8px; }
 h2 { font-size: 2rem; margin: 0 0 8px; }
@@ -184,7 +187,7 @@ footer { margin-top: 56px; padding: 28px 0 40px; border-top: 1px solid var(--lin
 </head>
 <body>
 <header class="hero">
-  <nav class="langs wrap" aria-label="Language">${switcher}</nav>
+  <nav class="langs wrap"><a class="home" href="${home}">← ${esc(t.allMods)}</a><span>${switcher}</span></nav>
   <div class="wrap">
     <img class="icon" src="${up}img/icon.png" alt="" width="160" height="160">
     <div>
@@ -269,6 +272,7 @@ ${t.features.map(([title, text]) => `      <div class="feature"><h3>${esc(title)
   <div class="wrap">
     <p>${t.footerSource(link(`https://github.com/${repo}`), link(`https://github.com/${repo}/issues`))}</p>
     <p>${esc(t.footerLegal)}</p>
+    <p>${link(home)(`← ${t.allMods}`)}</p>
   </div>
 </footer>
 <script>
